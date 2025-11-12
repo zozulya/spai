@@ -15,6 +15,7 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.parse import quote
 import logging
 import re
 
@@ -162,10 +163,12 @@ class TopicDiscoverer:
             headlines = []
             if 'mostread' in data and 'articles' in data['mostread']:
                 for article in data['mostread']['articles'][:10]:
+                    # URL encode the title to handle spaces and special characters
+                    encoded_title = quote(article['title'].replace(' ', '_'), safe='')
                     headlines.append({
                         'id': article['title'],
                         'text': article['title'],
-                        'url': f"https://{lang}.wikipedia.org/wiki/{article['title']}",
+                        'url': f"https://{lang}.wikipedia.org/wiki/{encoded_title}",
                         'source': source['name'],  # Use configured source name
                         'published': None,
                         'summary': article.get('extract', '')[:200]
