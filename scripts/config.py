@@ -11,6 +11,10 @@ import os
 import yaml
 from typing import Dict, Any
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file at module import time
+load_dotenv()
 
 
 def load_yaml(filepath: Path) -> Dict[str, Any]:
