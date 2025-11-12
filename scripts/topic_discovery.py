@@ -93,7 +93,9 @@ class TopicDiscoverer:
         entities_by_headline = {}
         for headline in all_headlines:
             entities = self._extract_entities(headline['text'])
-            entities_by_headline[headline['id']] = {
+            # Use composite key to prevent collisions when different sources report same story
+            composite_key = f"{headline['source']}:{headline['id']}"
+            entities_by_headline[composite_key] = {
                 'headline': headline,
                 'entities': entities
             }
