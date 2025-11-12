@@ -131,10 +131,16 @@ class TopicDiscoverer:
             headlines = []
             
             for entry in feed.entries[:20]:
+                # Skip entries missing required fields
+                title = getattr(entry, 'title', None)
+                link = getattr(entry, 'link', None)
+                if not title or not link:
+                    continue
+
                 headlines.append({
-                    'id': entry.get('id', entry.link),
-                    'text': entry.title,
-                    'url': entry.link,
+                    'id': entry.get('id', link),
+                    'text': title,
+                    'url': link,
                     'source': source['name'],
                     'published': entry.get('published_parsed', None),
                     'summary': entry.get('summary', '')[:200]
@@ -163,11 +169,16 @@ class TopicDiscoverer:
             headlines = []
             if 'mostread' in data and 'articles' in data['mostread']:
                 for article in data['mostread']['articles'][:10]:
+                    # Skip articles missing required fields
+                    title = article.get('title')
+                    if not title:
+                        continue
+
                     # URL encode the title to handle spaces and special characters
-                    encoded_title = quote(article['title'].replace(' ', '_'), safe='')
+                    encoded_title = quote(title.replace(' ', '_'), safe='')
                     headlines.append({
-                        'id': article['title'],
-                        'text': article['title'],
+                        'id': title,
+                        'text': title,
                         'url': f"https://{lang}.wikipedia.org/wiki/{encoded_title}",
                         'source': source['name'],  # Use configured source name
                         'published': None,
@@ -189,10 +200,16 @@ class TopicDiscoverer:
             headlines = []
             
             for entry in feed.entries[:15]:
+                # Skip entries missing required fields
+                title = getattr(entry, 'title', None)
+                link = getattr(entry, 'link', None)
+                if not title or not link:
+                    continue
+
                 headlines.append({
-                    'id': entry.title,
-                    'text': entry.title,
-                    'url': entry.link,
+                    'id': title,
+                    'text': title,
+                    'url': link,
                     'source': f'Google Trends {geo}',
                     'published': None,
                     'summary': entry.get('description', '')[:200]
