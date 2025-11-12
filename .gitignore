@@ -29,8 +29,10 @@ ENV/
 logs/
 *.log
 
-# Output
-output/
+# Output (Jekyll needs to be tracked for GitHub Pages)
+output/_site/
+output/.jekyll-cache/
+output/Gemfile.lock
 
 # Testing
 .pytest_cache/
