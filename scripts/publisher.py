@@ -158,7 +158,9 @@ reading_time: {article.get('reading_time', 3)}
         return markdown
 
     def _format_topics(self, article: Dict) -> str:
-        """Extract and format topics from article"""
+        """Extract and format topics from article as valid YAML"""
+        import json
+
         # Try to infer topics from article topic data
         topic_data = article.get('topic', {})
         keywords = topic_data.get('keywords', [])
@@ -166,7 +168,9 @@ reading_time: {article.get('reading_time', 3)}
         if keywords:
             # Take first 3 keywords, lowercased
             topics = [k.lower() for k in keywords[:3]]
-            return str(topics)
+            # Use JSON serialization for proper YAML compatibility
+            # This handles apostrophes, quotes, and special characters correctly
+            return json.dumps(topics)
 
         # Fallback: generic topic
         return '["general"]'
