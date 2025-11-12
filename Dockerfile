@@ -7,14 +7,19 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         build-essential \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
 
-# Download SpaCy Spanish model
-RUN python -m spacy download es_core_news_sm
+# Copy dependency files and README (required by pyproject.toml)
+COPY pyproject.toml uv.lock README.md ./
+
+# Install Python dependencies using uv
+# This includes the SpaCy model from the direct dependency
+RUN uv sync --frozen
 
 # Copy application code
 COPY scripts/ ./scripts/
@@ -32,6 +37,6 @@ USER appuser
 # the container can write to these locations in standalone mode
 RUN mkdir -p /app/output/_posts /app/output/logs /app/output/metrics /app/logs
 
-# Default command runs topic discovery test
-# Override with docker run command for other components
-CMD ["python", "scripts/test_discovery.py"]
+# Default command runs test discovery
+# Use uv run to ensure virtual environment is activated
+CMD ["uv", "run", "python", "scripts/test_discovery.py"]
