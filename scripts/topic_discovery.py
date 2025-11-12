@@ -213,27 +213,33 @@ class TopicDiscoverer:
     
     def _cluster_topics(self, entities_by_headline: Dict) -> List[Dict]:
         """Find topics appearing in multiple sources"""
-        entity_to_headlines = defaultdict(list)
+        entity_to_headlines = defaultdict(set)  # Use set to avoid duplicates
         entity_to_sources = defaultdict(set)
-        
+
         for headline_id, data in entities_by_headline.items():
             headline = data['headline']
             entities = data['entities']
-            
-            for entity in entities:
-                normalized = entity.lower()
-                entity_to_headlines[normalized].append(headline)
+
+            # Deduplicate entities within the same headline
+            unique_entities = set(entity.lower() for entity in entities)
+
+            for normalized in unique_entities:
+                # Use headline_id to ensure unique headlines
+                entity_to_headlines[normalized].add(headline_id)
                 entity_to_sources[normalized].add(headline['source'])
-        
+
         # Find entities in min_sources+ sources
         topics = []
-        for entity, headlines in entity_to_headlines.items():
+        for entity, headline_ids in entity_to_headlines.items():
             sources = entity_to_sources[entity]
 
             if len(sources) >= self.min_sources:  # Cross-source validation
+                # Convert headline_ids back to headline objects
+                headlines = [entities_by_headline[hid]['headline'] for hid in headline_ids]
+
                 topics.append({
                     'title': entity.title(),
-                    'mentions': len(headlines),
+                    'mentions': len(headlines),  # Now accurate count
                     'sources': list(sources),
                     'headlines': headlines,
                     'keywords': self._extract_keywords(headlines)
