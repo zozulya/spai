@@ -275,16 +275,20 @@ class TopicDiscoverer:
             # Mentions matter (capped)
             score += min(topic['mentions'], self.mention_cap) * self.mention_weight
 
-            # Check keywords
-            keywords_lower = [k.lower() for k in topic['keywords']]
-            keywords_text = ' '.join(keywords_lower)
+            # Check keywords (use word boundaries to avoid partial matches)
+            keywords_lower = set(k.lower() for k in topic['keywords'])
 
-            # Learner-friendly bonus
-            if any(kw in keywords_text for kw in self.friendly_keywords):
+            # Split keywords into individual words for matching
+            keyword_words = set()
+            for keyword in keywords_lower:
+                keyword_words.update(keyword.split())
+
+            # Learner-friendly bonus (exact word match, not substring)
+            if any(kw in keyword_words for kw in self.friendly_keywords):
                 score += self.cultural_bonus
 
-            # Avoid penalty
-            if any(kw in keywords_text for kw in self.avoid_keywords):
+            # Avoid penalty (exact word match, not substring)
+            if any(kw in keyword_words for kw in self.avoid_keywords):
                 score += self.avoid_penalty  # avoid_penalty is already negative
 
             topic['score'] = score
