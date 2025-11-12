@@ -26,21 +26,30 @@ class TopicDiscoverer:
         self.config = config
         self.logger = logger.getChild('TopicDiscoverer')
         self.sources = config.get('sources_list', [])
-        
+        self.min_sources = config.get('discovery', {}).get('min_sources', 3)
+
+        # Ranking configuration
+        ranking_config = config.get('ranking', {})
+        self.source_weight = ranking_config.get('source_weight', 3)
+        self.mention_weight = ranking_config.get('mention_weight', 2)
+        self.mention_cap = ranking_config.get('mention_cap', 10)
+        self.cultural_bonus = ranking_config.get('cultural_bonus', 5)
+        self.avoid_penalty = ranking_config.get('avoid_penalty', -10)
+
         # Load SpaCy Spanish model
         try:
             self.nlp = spacy.load("es_core_news_sm")
         except OSError:
             self.logger.error("SpaCy Spanish model not found. Install with: python -m spacy download es_core_news_sm")
             raise
-        
+
         # Learner-friendly topics
         self.friendly_keywords = {
             'cultura', 'arte', 'música', 'deporte', 'fútbol', 'cine', 'festival',
             'comida', 'gastronomía', 'turismo', 'viaje', 'historia', 'tradición',
             'celebración', 'familia', 'educación', 'libro', 'película'
         }
-        
+
         # Topics to avoid
         self.avoid_keywords = {
             'guerra', 'ataque', 'militar', 'bomba', 'terrorismo',
@@ -216,12 +225,12 @@ class TopicDiscoverer:
                 entity_to_headlines[normalized].append(headline)
                 entity_to_sources[normalized].add(headline['source'])
         
-        # Find entities in 3+ sources
+        # Find entities in min_sources+ sources
         topics = []
         for entity, headlines in entity_to_headlines.items():
             sources = entity_to_sources[entity]
-            
-            if len(sources) >= 3:  # Cross-source validation
+
+            if len(sources) >= self.min_sources:  # Cross-source validation
                 topics.append({
                     'title': entity.title(),
                     'mentions': len(headlines),
@@ -248,26 +257,26 @@ class TopicDiscoverer:
         """Rank topics by learnability"""
         for topic in topics:
             score = 0
-            
+
             # Base: more sources = more important
-            score += len(topic['sources']) * 3
-            
+            score += len(topic['sources']) * self.source_weight
+
             # Mentions matter (capped)
-            score += min(topic['mentions'], 10) * 2
-            
+            score += min(topic['mentions'], self.mention_cap) * self.mention_weight
+
             # Check keywords
             keywords_lower = [k.lower() for k in topic['keywords']]
             keywords_text = ' '.join(keywords_lower)
-            
+
             # Learner-friendly bonus
             if any(kw in keywords_text for kw in self.friendly_keywords):
-                score += 5
-            
+                score += self.cultural_bonus
+
             # Avoid penalty
             if any(kw in keywords_text for kw in self.avoid_keywords):
-                score -= 10
-            
+                score += self.avoid_penalty  # avoid_penalty is already negative
+
             topic['score'] = score
-        
+
         # Sort by score
         return sorted(topics, key=lambda t: t['score'], reverse=True)
