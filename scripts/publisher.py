@@ -36,12 +36,15 @@ class Publisher:
             True if saved successfully
         """
         try:
+            # Generate timestamp once for consistency between filename and frontmatter
+            timestamp = datetime.now()
+
             # Generate filename
-            filename = self._generate_filename(article)
+            filename = self._generate_filename(article, timestamp)
             filepath = self.output_dir / filename
 
             # Generate markdown content
-            markdown = self._generate_markdown(article)
+            markdown = self._generate_markdown(article, timestamp)
 
             if self.dry_run:
                 self.logger.info(f"[DRY RUN] Would save: {filename}")
@@ -61,15 +64,19 @@ class Publisher:
             self.logger.debug(traceback.format_exc())
             return False
 
-    def _generate_filename(self, article: Dict) -> str:
+    def _generate_filename(self, article: Dict, timestamp: datetime) -> str:
         """
         Generate Jekyll filename
 
         Format: YYYY-MM-DD-HHMMSS-title-slug-level.md
         Includes timestamp to prevent collisions when multiple articles
         with similar titles are generated on the same day.
+
+        Args:
+            article: Article dict with title and level
+            timestamp: datetime object for consistent timestamping
         """
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+        timestamp_str = timestamp.strftime("%Y-%m-%d-%H%M%S")
 
         # Create slug from title
         title = article['title']
@@ -77,7 +84,7 @@ class Publisher:
 
         level = article['level'].lower()
 
-        return f"{timestamp}-{slug}-{level}.md"
+        return f"{timestamp_str}-{slug}-{level}.md"
 
     def _slugify(self, text: str) -> str:
         """Convert text to URL-safe slug"""
@@ -118,8 +125,14 @@ class Publisher:
         text = text.replace('"', '\\"')
         return text
 
-    def _generate_markdown(self, article: Dict) -> str:
-        """Generate Jekyll markdown with frontmatter"""
+    def _generate_markdown(self, article: Dict, timestamp: datetime) -> str:
+        """
+        Generate Jekyll markdown with frontmatter
+
+        Args:
+            article: Article dict with all content
+            timestamp: datetime object for consistent timestamping
+        """
 
         # Escape title and sources for YAML
         escaped_title = self._escape_yaml_string(article['title'])
@@ -128,7 +141,7 @@ class Publisher:
         # YAML frontmatter
         frontmatter = f"""---
 title: "{escaped_title}"
-date: {datetime.now().isoformat()}
+date: {timestamp.isoformat()}
 level: {article['level']}
 topics: {self._format_topics(article)}
 sources: "{escaped_sources}"
