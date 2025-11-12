@@ -28,4 +28,6 @@ RUN useradd -m -u 1000 appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
-CMD ["python", "scripts/main.py"]
+# Default command runs topic discovery test
+# Override with docker run command for other components
+CMD ["python", "scripts/test_discovery.py"]
