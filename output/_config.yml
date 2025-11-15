@@ -1,6 +1,6 @@
 # Site Settings
-title: "AutoSpanishBlog"
-name: "AutoSpanishBlog"
+title: "Spai"
+name: "Spai"
 description: "Aprende español con artículos de actualidad - Learn Spanish with current events articles"
 url: "https://spai.aizlabs.ch"
 baseurl: ""
@@ -12,7 +12,7 @@ minimal_mistakes_skin: "default"
 
 # Site Author
 author:
-  name: "AutoSpanishBlog"
+  name: "Spai"
   bio: "Automated Spanish learning content from real news"
   links:
     - label: "GitHub"

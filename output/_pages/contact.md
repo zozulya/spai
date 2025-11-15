@@ -1,7 +1,7 @@
 ---
 permalink: /contact/
 title: "Contacto"
-excerpt: "Get in touch with AutoSpanishBlog"
+excerpt: "Get in touch with Spai"
 layout: single
 ---
 

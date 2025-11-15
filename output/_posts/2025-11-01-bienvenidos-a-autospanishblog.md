@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "¡Bienvenidos a AutoSpanishBlog!"
+title: "¡Bienvenidos a Spai!"
 date: 2025-11-01
 level: A2
 topics:
@@ -16,9 +16,9 @@ sources: []
 
 ¿Quieres aprender español? ¿Te gustan las noticias? ¡Perfecto! Este sitio es para ti.
 
-## ¿Qué es AutoSpanishBlog?
+## ¿Qué es Spai?
 
-AutoSpanishBlog es tu profesor de español personal. Pero no es una persona... ¡es un robot inteligente! 🤖
+Spai es tu profesor de español personal. Pero no es una persona... ¡es un robot inteligente! 🤖
 
 Cada día, este robot:
 - Lee las noticias en español
@@ -92,7 +92,7 @@ Prometemos tres cosas:
 
 Recuerda: **aprender español puede ser divertido**. No necesitas estudiar gramática todo el día. Solo lee un artículo cada mañana con tu café ☕. Poco a poco, tu español mejora.
 
-¡Bienvenido a la familia de AutoSpanishBlog! 🇪🇸
+¡Bienvenido a la familia de Spai! 🇪🇸
 
 ---
 

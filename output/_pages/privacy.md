@@ -9,7 +9,7 @@ layout: single
 
 ## Información General
 
-AutoSpanishBlog ("nosotros", "nuestro") se compromete a proteger su privacidad. Esta política describe cómo manejamos la información cuando visita nuestro sitio web.
+Spai ("nosotros", "nuestro") se compromete a proteger su privacidad. Esta política describe cómo manejamos la información cuando visita nuestro sitio web.
 
 ## Información que Recopilamos
 

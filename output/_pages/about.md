@@ -1,13 +1,13 @@
 ---
 permalink: /about/
-title: "Sobre AutoSpanishBlog"
+title: "Sobre Spai"
 excerpt: "Learn Spanish through automatically generated articles from real news sources"
 layout: single
 ---
 
-## ¿Qué es AutoSpanishBlog?
+## ¿Qué es Spai?
 
-AutoSpanishBlog es una plataforma educativa que genera automáticamente artículos en español para estudiantes de idiomas. Usamos tecnología avanzada para crear contenido original adaptado a diferentes niveles de aprendizaje.
+Spai es una plataforma educativa que genera automáticamente artículos en español para estudiantes de idiomas. Usamos tecnología avanzada para crear contenido original adaptado a diferentes niveles de aprendizaje.
 
 ## Metodología
 

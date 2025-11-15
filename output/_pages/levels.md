@@ -9,7 +9,7 @@ layout: single
 
 El **Marco Común Europeo de Referencia para las lenguas** (CEFR) es un estándar internacional para describir la competencia lingüística.
 
-AutoSpanishBlog ofrece contenido en dos niveles:
+Spai ofrece contenido en dos niveles:
 
 ---
 
