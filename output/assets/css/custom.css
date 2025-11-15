@@ -1,6 +1,47 @@
 /* AutoSpanishBlog Custom Styles */
 
 /* ==========================================================================
+   Full Width Layout Override
+   ========================================================================== */
+
+/* Override Minimal Mistakes theme's content width constraints */
+.page {
+  width: 100%;
+  max-width: 100%;
+}
+
+.page__inner-wrap {
+  max-width: 100%;
+  padding: 0 1.5em;
+}
+
+@media (min-width: 80em) {
+  .page__inner-wrap {
+    padding: 0 3em;
+  }
+}
+
+/* Center content with reasonable max-width for readability */
+.intro-section,
+.filter-section,
+.articles-grid,
+.pagination {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+   Site Title with Spanish Flag
+   ========================================================================== */
+
+.site-title::before {
+  content: "🇪🇸 ";
+  font-size: 1.2em;
+  margin-right: 0.3em;
+}
+
+/* ==========================================================================
    Level Badges
    ========================================================================== */
 
