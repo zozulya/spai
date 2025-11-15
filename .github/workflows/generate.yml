@@ -1,0 +1,137 @@
+name: Generate Spanish Learning Articles
+
+on:
+  schedule:
+    # 3x daily: 2am, 10am, 6pm UTC
+    - cron: '0 2 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 18 * * *'
+  workflow_dispatch:  # Manual trigger button
+
+# Prevent overlapping runs
+concurrency:
+  group: article-generation
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: write  # Needed to commit and push files
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Cache uv dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-uv-${{ hashFiles('uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Create output directories
+        run: |
+          mkdir -p output/_posts
+          mkdir -p output/logs
+          mkdir -p logs
+
+      - name: Run content generation pipeline
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ENVIRONMENT: production
+        run: |
+          uv run spai-pipeline
+
+      - name: Check for generated articles
+        id: check_articles
+        run: |
+          if [ -n "$(git status --porcelain output/_posts/)" ]; then
+            echo "has_articles=true" >> $GITHUB_OUTPUT
+            echo "Generated $(git status --porcelain output/_posts/ | wc -l) new articles"
+          else
+            echo "has_articles=false" >> $GITHUB_OUTPUT
+            echo "No new articles generated"
+          fi
+
+      - name: Commit and push generated articles
+        if: steps.check_articles.outputs.has_articles == 'true'
+        run: |
+          git config user.name "AutoSpanishBot"
+          git config user.email "bot@github.com"
+
+          # Add generated articles
+          git add output/_posts/
+          git add output/logs/
+
+          # Create commit with timestamp
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
+          git commit -m "Generate articles - $TIMESTAMP
+
+          🤖 Automated content generation
+
+          Generated with [Claude Code](https://claude.com/claude-code)"
+
+          # Push to main branch
+          git push origin main
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Pipeline Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.check_articles.outputs.has_articles }}" == "true" ]; then
+            echo "✅ **Status:** Success" >> $GITHUB_STEP_SUMMARY
+            echo "📝 **Articles:** $(git diff --name-only HEAD~1 output/_posts/ 2>/dev/null | wc -l) generated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Status:** No articles generated" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Time:** $(date -u +"%Y-%m-%d %H:%M UTC")" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ AutoSpanishBlog: Article generation failed"
+          to: ${{ secrets.ALERT_EMAIL }}
+          from: AutoSpanishBot <noreply@github.com>
+          body: |
+            Article generation pipeline failed.
+
+            Run ID: ${{ github.run_id }}
+            Workflow: ${{ github.workflow }}
+            Triggered by: ${{ github.event_name }}
+            Branch: ${{ github.ref_name }}
+
+            Check logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            ---
+            AutoSpanishBlog Automation

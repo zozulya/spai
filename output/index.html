@@ -1,0 +1,108 @@
+---
+layout: home
+title: "AutoSpanishBlog - Aprende Español con Artículos de Actualidad"
+excerpt: "Learn Spanish with automatically generated articles from real news sources. New content daily at A2 and B1 levels."
+---
+
+<div class="intro-section">
+  <h1>Bienvenidos a AutoSpanishBlog</h1>
+  <p class="lead">Aprende español leyendo artículos de actualidad adaptados a tu nivel. Contenido nuevo todos los días.</p>
+
+  <div class="level-info">
+    <div class="level-box">
+      <span class="level-badge level-a2">A2</span>
+      <h3>Principiante</h3>
+      <p>Artículos sencillos con vocabulario básico y presente simple.</p>
+    </div>
+    <div class="level-box">
+      <span class="level-badge level-b1">B1</span>
+      <h3>Intermedio</h3>
+      <p>Artículos más complejos con diferentes tiempos verbales.</p>
+    </div>
+  </div>
+</div>
+
+<div class="filter-section">
+  <h2>Últimos Artículos</h2>
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-level="all">Todos</button>
+    <button class="filter-btn" data-level="A2">A2</button>
+    <button class="filter-btn" data-level="B1">B1</button>
+  </div>
+</div>
+
+<div class="articles-grid">
+  {% for post in paginator.posts %}
+    <article class="article-card" data-level="{{ post.level }}">
+      <div class="article-header">
+        <span class="level-badge level-{{ post.level | downcase }}">{{ post.level }}</span>
+        <span class="article-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+      </div>
+
+      <h2 class="article-title">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h2>
+
+      <div class="article-excerpt">
+        {{ post.summary | default: post.content | strip_html | truncatewords: 30 }}
+      </div>
+
+      <div class="article-meta">
+        {% if post.reading_time %}
+          <span><i class="far fa-clock"></i> {{ post.reading_time }} min</span>
+        {% endif %}
+        {% if post.topics %}
+          <span class="topics">
+            {% for topic in post.topics limit:2 %}
+              <span class="topic-tag">{{ topic }}</span>
+            {% endfor %}
+          </span>
+        {% endif %}
+      </div>
+
+      <a href="{{ post.url | relative_url }}" class="read-more">Leer artículo →</a>
+    </article>
+  {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if paginator.total_pages > 1 %}
+<nav class="pagination">
+  {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | relative_url }}" class="pagination-btn">← Anterior</a>
+  {% endif %}
+
+  <span class="pagination-info">Página {{ paginator.page }} de {{ paginator.total_pages }}</span>
+
+  {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | relative_url }}" class="pagination-btn">Siguiente →</a>
+  {% endif %}
+</nav>
+{% endif %}
+
+<script>
+// Level filtering
+document.addEventListener('DOMContentLoaded', function() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const articles = document.querySelectorAll('.article-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Update active button
+      filterBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const level = this.dataset.level;
+
+      // Filter articles
+      articles.forEach(article => {
+        if (level === 'all' || article.dataset.level === level) {
+          article.style.display = 'flex';
+        } else {
+          article.style.display = 'none';
+        }
+      });
+    });
+  });
+});
+</script>

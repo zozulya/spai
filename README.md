@@ -1,1 +1,247 @@
-# spai
+# AutoSpanishBlog 🇪🇸
+
+> Automated Spanish language learning content generation platform
+
+[![GitHub Pages](https://img.shields.io/badge/deployed-GitHub%20Pages-success)](https://aizlabs.github.io/spai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+
+AutoSpanishBlog automatically generates high-quality Spanish learning articles from real news sources. New content published 3x daily at A2 and B1 CEFR levels.
+
+## 🎯 Features
+
+- **Automated Generation:** 12 articles/day from 20+ news sources
+- **Multi-Source Synthesis:** Original content from 3-5 sources per article
+- **CEFR Levels:** A2 (beginner) and B1 (intermediate)
+- **Quality Assurance:** LLM judge with 7.5/10 minimum score
+- **Jekyll Site:** Beautiful, fast static site on GitHub Pages
+- **Free & Open Source:** MIT license, fully transparent
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.11+
+- [uv](https://github.com/astral-sh/uv) package manager
+- OpenAI or Anthropic API key
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/aizlabs/spai.git
+cd spai
+
+# One-command setup (installs all dependencies including SpaCy model)
+uv sync
+
+# Configure API keys
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
+
+# Create output directories
+mkdir -p output/_posts logs
+```
+
+### Run Pipeline
+
+```bash
+# Test individual components
+uv run spai-discover     # Topic discovery
+uv run spai-fetch        # Content fetcher
+uv run spai-generate     # Content generator
+
+# Run full pipeline
+uv run spai-pipeline
+
+# Check output
+ls output/_posts/
+```
+
+## 📖 Documentation
+
+- **[Development Guide](CLAUDE.md)** - Complete development documentation
+- **[System Design](DESING.md)** - Comprehensive architecture (1587 lines)
+- **[Local Jekyll Preview](.github/LOCAL_JEKYLL_SETUP.md)** - View site locally before deployment
+- **[GitHub Actions Setup](.github/SECRETS_SETUP.md)** - CI/CD configuration
+- **[GitHub Pages Setup](.github/GITHUB_PAGES_SETUP.md)** - Deployment guide
+
+## 🏗️ Architecture
+
+```
+┌──────────────────┐
+│ Topic Discovery  │  30+ RSS feeds, Wikipedia, SpaCy NER
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│ Content Fetcher  │  Trafilatura, parallel processing
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│ Content Generator│  OpenAI GPT-4o, multi-source synthesis
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│ Quality Gate     │  LLM judge, regeneration loop (max 3x)
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│ Publisher        │  Jekyll markdown with YAML frontmatter
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│ GitHub Pages     │  Static site deployment
+└──────────────────┘
+```
+
+## 🛠️ Technology Stack
+
+**Backend:**
+- Python 3.11, uv package manager
+- SpaCy (Spanish NER)
+- Trafilatura (web scraping)
+- OpenAI GPT-4o / GPT-4o-mini
+
+**Frontend:**
+- Jekyll + Minimal Mistakes theme
+- GitHub Pages (free hosting)
+- Custom CSS for CEFR level badges
+
+**Infrastructure:**
+- GitHub Actions (scheduled automation)
+- Docker (containerization)
+- Git (version control + content storage)
+
+## 📊 Content Quality
+
+### Multi-Source Synthesis
+Each article synthesizes information from **3-5 different sources**:
+- El País, BBC Mundo, El Mundo
+- CNN Español, Deutsche Welle
+- Wikipedia, and 15+ more
+
+### Quality Control
+- **Minimum Score:** 7.5/10
+- **Scoring Criteria:** Grammar (0-4), Educational Value (0-3), Content Quality (0-2), Vocabulary (0-1)
+- **Regeneration:** Up to 3 attempts with feedback
+- **Success Rate:** ~95% of articles pass quality gate
+
+### CEFR Levels
+
+**A2 - Elemental:**
+- 1000 most common Spanish words
+- Present tense primarily
+- Simple sentences (max 12 words)
+- ~200 words per article
+
+**B1 - Intermedio:**
+- 2000+ vocabulary
+- Mixed tenses (present, preterite, imperfect, subjunctive)
+- Complex sentence structures
+- ~300 words per article
+
+## 🔄 Automation
+
+**Schedule:** 3x daily (2am, 10am, 6pm UTC)
+**Output:** 4 articles per run = 12 articles/day
+**Cost:** ~$10-12/month (LLM API calls only)
+
+### GitHub Actions Workflow
+
+```yaml
+name: Generate Articles
+on:
+  schedule:
+    - cron: '0 2,10,18 * * *'
+  workflow_dispatch:  # Manual trigger
+```
+
+## 📝 Article Format
+
+Generated articles include:
+- **Title:** Engaging, level-appropriate
+- **Content:** 200-300 words synthesized from sources
+- **Vocabulary:** 10 key words with translations
+- **Metadata:** Level, reading time, topics
+- **Attribution:** Source list and educational disclaimer
+
+Example output: `output/_posts/2025-11-12-messi-estados-unidos-a2.md`
+
+## 🌐 Live Site
+
+**URL:** [https://aizlabs.github.io/spai](https://aizlabs.github.io/spai)
+
+Features:
+- Homepage with article listing
+- Level filtering (A2/B1)
+- Responsive design
+- Custom level badges
+- Source attribution
+
+## 💰 Cost Analysis
+
+**Monthly Operating Costs:**
+- GitHub Actions: $0 (free tier)
+- GitHub Pages: $0 (free hosting)
+- OpenAI API: ~$10-12 (360 articles/month)
+- **Total: $10-12/month**
+
+**Per Article Cost:** ~$0.03 (including regenerations)
+
+## 🚦 Project Status
+
+### ✅ Phase 1: MVP Core (Complete)
+- Topic Discovery Engine
+- Content Fetcher
+- Content Generator
+- Quality Gate
+- Publisher
+- Main Pipeline
+
+### ✅ Phase 2: Automation & Launch (Complete)
+- GitHub Actions workflows
+- Jekyll site with Minimal Mistakes theme
+- GitHub Pages deployment
+- Initial 20+ articles
+
+### 🔜 Phase 3: Growth & Marketing (Next)
+- SEO optimization
+- Google Search Console
+- AdSense application
+- Newsletter setup
+
+## 🤝 Contributing
+
+Contributions welcome! Please see:
+- [Development Guide](CLAUDE.md)
+- [Open Issues](https://github.com/aizlabs/spai/issues)
+
+### Areas for Contribution
+- Additional Spanish news sources
+- Improved prompts for content generation
+- Enhanced quality scoring algorithms
+- New CEFR levels (A1, C1, C2)
+- Audio generation (TTS)
+- Quiz/flashcard features
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## 🙏 Acknowledgments
+
+- **News Sources:** El País, BBC Mundo, CNN Español, and 20+ others
+- **Technologies:** OpenAI, SpaCy, Jekyll, GitHub
+- **Community:** Spanish language learning community
+
+## 📧 Contact
+
+- **Repository:** [github.com/aizlabs/spai](https://github.com/aizlabs/spai)
+- **Issues:** [github.com/aizlabs/spai/issues](https://github.com/aizlabs/spai/issues)
+- **Live Site:** [aizlabs.github.io/spai](https://aizlabs.github.io/spai)
+
+---
+
+**Made with ❤️ for Spanish learners worldwide**
+
+*Automated content generation powered by AI | Educational purposes only*

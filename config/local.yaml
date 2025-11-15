@@ -2,10 +2,10 @@
 
 environment: local
 
-# Testing with 1 article only during development
+# Initial content generation - 2 articles per run to build catalog
 generation:
-  articles_per_run: 1
-  levels: [A2]  # Only A2 for faster testing
+  articles_per_run: 2
+  levels: [A2, B1]  # Both levels for variety
 
 # Lower quality threshold during development
 quality_gate:

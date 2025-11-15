@@ -266,21 +266,22 @@ tail -100 logs/local.log
 
 ## Status
 
-✅ **Topic Discovery Engine: COMPLETE**
-- 22 working sources (100% success rate)
-- SpaCy NER entity extraction
-- Cross-source validation (3+ sources)
-- Ranking algorithm with cultural bonuses
-- Parallel fetching (~9 seconds)
-- Test passing with 10 topics discovered
-- Fully reproducible environment with uv.lock
+✅ **Phase 1: MVP Core - COMPLETE**
+- Topic Discovery Engine (100% working)
+- Content Fetcher (parallel processing)
+- Content Generator (OpenAI GPT-4o)
+- Quality Gate (LLM judge with regeneration)
+- Publisher (Jekyll markdown)
+- Main Pipeline (end-to-end orchestration)
 
-✅ **Content Fetcher: COMPLETE**
-- Trafilatura integration for clean article extraction
-- Parallel fetching (8 sources in ~2 seconds)
-- Wikipedia API special handling
-- Word truncation (300 words max per source)
-- Error handling for timeouts, 404s, empty content
-- Test passing with 5 sources per topic (100% success)
+✅ **Phase 2: Automation & Launch - COMPLETE**
+- GitHub Actions workflow (3x daily automation)
+- Jekyll site with Minimal Mistakes theme
+- Custom layouts for A2/B1 articles
+- Homepage with level filtering
+- About, Levels, Privacy, Contact pages
+- Custom CSS for level badges
+- GitHub Pages setup guides
+- Initial 20 articles generated
 
-**Next:** Content Generator component (LLM synthesis)
+**Next:** Phase 3 - Growth & Marketing

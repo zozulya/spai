@@ -1,0 +1,44 @@
+<!-- AutoSpanishBlog Custom Styles -->
+<link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Open Graph meta tags for better social sharing -->
+<meta property="og:type" content="{% if page.date %}article{% else %}website{% endif %}">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+<meta property="og:url" content="{{ page.url | absolute_url }}">
+<meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+
+<!-- Twitter Card meta tags -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="{{ site.title }}">
+<meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+<meta name="twitter:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+
+<!-- Language Learning Schema -->
+{% if page.level %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "{{ page.title }}",
+  "description": "{{ page.excerpt | strip_html | strip_newlines }}",
+  "educationalLevel": "{{ page.level }}",
+  "inLanguage": "es",
+  "learningResourceType": "Article",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "author": {
+    "@type": "Organization",
+    "name": "AutoSpanishBlog"
+  }
+}
+</script>
+{% endif %}
+
+<!-- Placeholder for Google AdSense (future activation) -->
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script>
+-->
