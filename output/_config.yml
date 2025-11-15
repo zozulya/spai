@@ -2,8 +2,8 @@
 title: "AutoSpanishBlog"
 name: "AutoSpanishBlog"
 description: "Aprende español con artículos de actualidad - Learn Spanish with current events articles"
-url: "https://aizlabs.github.io"
-baseurl: "/spai"
+url: "https://spai.aizlabs.ch"
+baseurl: ""
 repository: "aizlabs/spai"
 
 # Theme
