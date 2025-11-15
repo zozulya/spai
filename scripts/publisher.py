@@ -175,7 +175,8 @@ reading_time: {article.get('reading_time', 3)}
         import json
 
         # Try to infer topics from article topic data
-        topic_data = article.get('topic', {})
+        # Use 'or {}' to handle None case (when topic is explicitly None)
+        topic_data = article.get('topic') or {}
         keywords = topic_data.get('keywords', [])
 
         if keywords:

@@ -200,7 +200,8 @@ class LevelAdapter:
             parsed['level'] = level
 
             # Inherit metadata from base article
-            parsed['topic'] = base_article.get('topic')
+            # Use default {} for topic to avoid None issues with Publisher
+            parsed['topic'] = base_article.get('topic', {})
             parsed['sources'] = base_article.get('sources', [])
 
             # Store base article for regeneration
