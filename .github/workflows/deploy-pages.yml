@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - 'output/**'
+  workflow_run:
+    workflows: ["Generate Spanish Learning Articles"]
+    types:
+      - completed
+    branches: [main]
   workflow_dispatch:
 
 # Grant GITHUB_TOKEN permissions for Pages deployment
@@ -21,6 +26,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Only run if triggered by workflow_run and the source workflow succeeded
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
